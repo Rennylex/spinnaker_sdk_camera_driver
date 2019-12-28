@@ -195,12 +195,12 @@ void acquisition::Camera::setBoolValue(string setting, bool val) {
 
 
 
-void acquisition::Camera::setResolutionPixels(int width, int height) {
+bool acquisition::Camera::setResolutionPixels(int width, int height) {
     CIntegerPtr ptrHeight=pCam_->GetNodeMap().GetNode("Height");
     CIntegerPtr ptrWidth=pCam_->GetNodeMap().GetNode("Width");
     if (!IsAvailable(ptrWidth) || !IsWritable(ptrWidth)){
-        ROS_FATAL_STREAM("Unable to set width" << "). Aborting...");
-        return ; 
+        ROS_FATAL_STREAM("Unable to set width" << "). Aborting..." << " Writable " << IsWritable(ptrWidth) << " Available: " << IsAvailable(ptrWidth));
+        return false; 
     }
     int64_t widthMax = ptrWidth->GetMax();
     if(widthMax<width)
@@ -210,7 +210,7 @@ void acquisition::Camera::setResolutionPixels(int width, int height) {
 
     if (!IsAvailable(ptrHeight) || !IsWritable(ptrHeight)){
         ROS_FATAL_STREAM("Unable to set height" << "). Aborting...");
-        return ; 
+        return false; 
     }
     int64_t heightMax = ptrHeight->GetMax();
     if(heightMax<height)
@@ -218,6 +218,8 @@ void acquisition::Camera::setResolutionPixels(int width, int height) {
 
     ROS_DEBUG_STREAM("Set Height"<<height);
     ptrHeight->SetValue(height);                                                                                                                                 
+
+    return true;
 }
 
 void acquisition::Camera::adcBitDepth(gcstring bitDep) {

@@ -30,7 +30,7 @@
   <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager_name)" args="manager" output="screen" if="$(arg start_nodelet_manager)" />
 
   <!-- load the acquisition nodelet -->
-  <node pkg="nodelet" type="nodelet" name="acquisition_node"
+  <node pkg="nodelet" type="nodelet" name="acquisition_node" respawn="true"
           args="load acquisition/capture_nodelet $(arg nodelet_manager_name)" >
     <!-- load the acquisition node parameters file.  Note any parameters provided in this file will 
 	 override what is in the yaml file.  Thus use it to set parameters camer_array configuration params -->

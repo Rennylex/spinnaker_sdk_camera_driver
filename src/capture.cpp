@@ -346,6 +346,9 @@ void acquisition::Capture::read_parameters() {
     ROS_WARN_STREAM("  Save path not provided, data will be saved to: " << path_);
     }
 
+    nh_pvt_.getParam("image_width", image_width_);
+    nh_pvt_.getParam("image_height", image_height_);
+
     if (path_.back() != '/')
         path_ = path_ + '/';
         
@@ -355,6 +358,7 @@ void acquisition::Capture::read_parameters() {
     ROS_INFO("  Camera IDs:");
     
     std::vector<int> cam_id_vec;
+    nh_pvt_.getParam("cam_ids", cam_id_vec);
     ROS_ASSERT_MSG(nh_pvt_.getParam("cam_ids", cam_id_vec),"If cam_aliases are provided, they should be the same number as cam_ids and should correspond in order!");
     int num_ids = cam_id_vec.size();
     for (int i=0; i < num_ids; i++){
@@ -376,6 +380,7 @@ void acquisition::Capture::read_parameters() {
     }
 
     int mcam_int;
+    nh_pvt_.getParam("master_cam", mcam_int);
     ROS_ASSERT_MSG(nh_pvt_.getParam("master_cam", mcam_int),"master_cam is required!");
     master_cam_id_=to_string(mcam_int);
     bool found = false;
@@ -639,10 +644,13 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                 // cams[i].setIntValue("DecimationVertical", decimation_);
                 // cams[i].setFloatValue("AcquisitionFrameRate", 5.0);
 
-                if (color_)
+                if (color_) {
                     cams[i].setEnumValue("PixelFormat", "BGR8");
-                    else
-                        cams[i].setEnumValue("PixelFormat", "Mono8");
+                }
+                else {
+                    cams[i].setEnumValue("PixelFormat", "Mono8");
+		}
+
                 cams[i].setEnumValue("AcquisitionMode", "Continuous");
                 
                 // set only master to be software triggered
@@ -673,6 +681,12 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                     cams[i].setEnumValue("TriggerActivation", "RisingEdge");
                 }
             }
+
+	    bool success = cams[i].setResolutionPixels(image_width_, image_height_);
+
+	    if (!success) {
+	        throw Spinnaker::Exception();
+	    }
         }
 
         catch (Spinnaker::Exception &e) {

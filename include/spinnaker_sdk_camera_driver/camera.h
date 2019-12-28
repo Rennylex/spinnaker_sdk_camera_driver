@@ -42,7 +42,7 @@ namespace acquisition {
         void setFREnable();
         void setPixelFormat(gcstring formatPic);
         void exposureTest();
-        void setResolutionPixels(int width, int height);
+        bool setResolutionPixels(int width, int height);
         void setBufferSize(int numBuf);
         void adcBitDepth(gcstring bitDep);
         void targetGreyValueTest();

@@ -92,6 +92,8 @@ namespace acquisition {
 
         time_t time_now_;
         double grab_time_, save_time_, toMat_time_, save_mat_time_, export_to_ROS_time_, achieved_time_;
+	int image_width_;
+	int image_height_;
 
         int nframes_;
         float init_delay_;
