@@ -26,7 +26,7 @@ acquisition::Capture::~Capture(){
 
     delete dynamicReCfgServer_;
     
-    ros::shutdown();
+    //ros::shutdown();
 
 }
 
@@ -668,6 +668,13 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                     }
                     //cams[i].setEnumValue("LineSource", "ExposureActive");
 
+		    bool success = cams[i].setResolutionPixels(image_width_, image_height_);
+
+		    if (!success) {
+			    ROS_FATAL_STREAM("Unable to set resolution. Ending program.");
+			    this->~Capture();
+			    exit(1);
+		    }
 
                 } else {
                     cams[i].setEnumValue("TriggerMode", "On");
@@ -682,18 +689,13 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                 }
             }
 
-	    bool success = cams[i].setResolutionPixels(image_width_, image_height_);
-
-	    if (!success) {
-	        throw Spinnaker::Exception();
-	    }
         }
 
         catch (Spinnaker::Exception &e) {
             string error_msg = e.what();
             ROS_FATAL_STREAM("Error: " << error_msg);
             if (error_msg.find("Unable to set PixelFormat to BGR8") >= 0)
-              ROS_WARN("Most likely cause for this error is if your camera can't support color and your are trying to set it to color mode");
+              ROS_WARN("Most likely cause for this error is if your camera can't support color and your are trying to set it to color mode, or it is not writable for some reason.");
             ros::shutdown();
         }
 
