@@ -198,6 +198,7 @@ void acquisition::Camera::setBoolValue(string setting, bool val) {
 bool acquisition::Camera::setResolutionPixels(int width, int height) {
     CIntegerPtr ptrHeight=pCam_->GetNodeMap().GetNode("Height");
     CIntegerPtr ptrWidth=pCam_->GetNodeMap().GetNode("Width");
+
     if (!IsAvailable(ptrWidth) || !IsWritable(ptrWidth)){
         ROS_FATAL_STREAM("Unable to set width" << "). Aborting..." << " Writable " << IsWritable(ptrWidth) << " Available: " << IsAvailable(ptrWidth));
         return false; 
@@ -205,6 +206,10 @@ bool acquisition::Camera::setResolutionPixels(int width, int height) {
     int64_t widthMax = ptrWidth->GetMax();
     if(widthMax<width)
         width=widthMax;
+
+    ROS_INFO_STREAM("Spinnaker setting resolution to " << width << "x" << height);
+    ROS_INFO_STREAM("Width increment is " << ptrWidth->GetInc());
+    ROS_INFO_STREAM("Height increment is " << ptrWidth->GetInc());
     ptrWidth->SetValue(width);
     ROS_DEBUG_STREAM("Set Width"<<width);
 

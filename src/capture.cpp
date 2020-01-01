@@ -668,13 +668,13 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                     }
                     //cams[i].setEnumValue("LineSource", "ExposureActive");
 
-		    bool success = cams[i].setResolutionPixels(image_width_, image_height_);
+		    //bool success = cams[i].setResolutionPixels(image_width_, image_height_);
 
-		    if (!success) {
-			    ROS_FATAL_STREAM("Unable to set resolution. Ending program.");
-			    this->~Capture();
-			    exit(1);
-		    }
+		    //if (!success) {
+			//    ROS_FATAL_STREAM("Unable to set resolution. Ending program.");
+			//    this->~Capture();
+			//    exit(1);
+		    //}
 
                 } else {
                     cams[i].setEnumValue("TriggerMode", "On");
