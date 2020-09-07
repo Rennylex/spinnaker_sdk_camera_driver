@@ -21,7 +21,7 @@ acquisition::Camera::Camera(CameraPtr pCam) {
     frameID_ = -1;
     MASTER_ = false;
     timestamp_ = 0;
-    GET_NEXT_IMAGE_TIMEOUT_ = 2000;
+    GET_NEXT_IMAGE_TIMEOUT_ = 10000;
     
 }
 

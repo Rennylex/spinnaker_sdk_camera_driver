@@ -37,7 +37,7 @@ void handler(int i) {
     
 }
 
-acquisition::Capture::Capture(): it_(nh_), nh_pvt_ ("~") {
+acquisition::Capture::Capture(): it_(nh_), nh_pvt_ ("~"), frame_number(0) {
 
     // struct sigaction sigIntHandler;
 
@@ -92,7 +92,7 @@ acquisition::Capture::Capture(): it_(nh_), nh_pvt_ ("~") {
     export_to_ROS_time_ = 0; 
     achieved_time_ = 0;
         
-    // decimation_ = 1;
+    decimation_ = 1;
   
     CAM_ = 0;
 
@@ -171,7 +171,7 @@ acquisition::Capture::Capture(ros::NodeHandle nodehandl, ros::NodeHandle private
     export_to_ROS_time_ = 0;
     achieved_time_ = 0;
 
-    // decimation_ = 1;
+    decimation_ = 1;
 
     CAM_ = 0;
 
@@ -456,14 +456,26 @@ void acquisition::Capture::read_parameters() {
         else ROS_INFO("  'target_grey_value'=%0.f, Setting AutoExposureTargetGreyValueAuto to Continuous/ auto",target_grey_value_);} 
     else ROS_WARN("  'target_grey_value' Parameter not set, using default behavior: AutoExposureTargetGreyValueAuto to auto");
 
+    if (nh_pvt_.getParam("decimation", decimation_)) {
+        if (decimation_ > 0) {
+            ROS_INFO_STREAM("  Decimation set to: " << decimation_);
+        } else {
+            decimation_ = 1;
+            ROS_INFO_STREAM("  Invalid decimation value given. Using default decimation=" << decimation_);
+        }
+    }
 
     if (nh_pvt_.getParam("binning", binning_)){
         if (binning_ >0) ROS_INFO("  Binning set to: %d",binning_);
         else {
             binning_=1;
-            ROS_INFO("  'binning'=%d invalid, Using defauly binning=",binning_);
+            ROS_INFO("  'binning'=%d invalid, Using default binning=",binning_);
         }
     } else ROS_WARN("  'binning' Parameter not set, using default behavior: Binning = %d",binning_);
+
+    if (decimation_ > 1 && binning_ > 1) {
+        ROS_ERROR("Cannot set both binning and decimation to 1!");
+    }
 
     if (nh_pvt_.getParam("soft_framerate", soft_framerate_)){
         if (soft_framerate_ >0) {
@@ -626,6 +638,9 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                 cams[i].setIntValue("BinningHorizontal", binning_);
                 cams[i].setIntValue("BinningVertical", binning_);
 
+                cams[i].setEnumValue("BinningHorizontalMode", "Average");
+                cams[i].setEnumValue("BinningVerticalMode", "Average");
+
                 cams[i].setEnumValue("ExposureMode", "Timed");
                 if (exposure_time_ > 0) { 
                     cams[i].setEnumValue("ExposureAuto", "Off");
@@ -640,8 +655,8 @@ void acquisition::Capture::init_cameras(bool soft = false) {
                     cams[i].setEnumValue("AutoExposureTargetGreyValueAuto", "Continuous");
                 }
 
-                // cams[i].setIntValue("DecimationHorizontal", decimation_);
-                // cams[i].setIntValue("DecimationVertical", decimation_);
+                cams[i].setIntValue("DecimationHorizontal", decimation_);
+                cams[i].setIntValue("DecimationVertical", decimation_);
                 // cams[i].setFloatValue("AcquisitionFrameRate", 5.0);
 
                 if (color_) {
@@ -805,6 +820,7 @@ void acquisition::Capture::export_to_ROS() {
         if (PUBLISH_CAM_INFO_){
             cam_info_msgs[i]->header.stamp = mesg.header.stamp;
         }
+
         camera_image_pubs[i].publish(img_msgs[i],cam_info_msgs[i]);
 /*
         if (PUBLISH_CAM_INFO_){

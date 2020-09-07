@@ -45,7 +45,7 @@ endif(${CMAKE_SYSTEM_PROCESSOR} MATCHES aarch64 OR arm)
 
 find_package(Boost REQUIRED)
 if(Boost_FOUND)
-  find_package ( Boost COMPONENTS filesystem system serialization REQUIRED )
+  find_package ( Boost COMPONENTS system serialization REQUIRED )
   set(Boost_GENERAL ${Boost_LIBRARIES})
 elseif(NOT Boost_FOUND)
   message("Boost not found!")
@@ -138,7 +138,17 @@ install(TARGETS acquilib acquisition_node capture_nodelet acquisition_nodelet no
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+install(FILES
+    launch/acquisition.launch
+    launch/acquisition_node.launch
+    launch/multiple_nodelet_example.launch
+    launch/nodelet_subscriber_example.launch
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
+
 install(DIRECTORY include
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h"
 )
+
+install(FILES nodelet_plugins.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

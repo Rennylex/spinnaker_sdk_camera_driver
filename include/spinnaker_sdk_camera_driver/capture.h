@@ -50,6 +50,7 @@ namespace acquisition {
 
         void read_parameters();
         std::string todays_date();
+        size_t frame_number;
 
         
         void write_queue_to_disk(queue<ImagePtr>*, int);
@@ -105,7 +106,7 @@ namespace acquisition {
         string ext_;
         float exposure_time_;
         double target_grey_value_;
-        // int decimation_;
+        int decimation_;
 
         int soft_framerate_; // Software (ROS) frame rate
         

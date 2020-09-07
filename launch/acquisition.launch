@@ -20,6 +20,7 @@
   <arg name="utstamps"          default="false"	doc="Flag whether each image should have Unique timestamps vs the master cams time stamp for all" />
   <arg name="max_rate_save"     default="false"	doc="Flag for max rate mode which is when the master triggerst the slaves and saves images at maximum rate possible" />
   <arg name="config_file"       default="$(find spinnaker_sdk_camera_driver)/params/test_params.yaml" doc="File specifying the parameters of the camera_array"/>
+  <arg name="decimation"        default="1"     doc="Can be 1 or 2. If 2, image resolution is halved. Unused pixels are discarded."/>
 
   <!-- nodelet params-->
   <arg name="nodelet_manager_name" default="vision_nodelet_manager" doc="name of the nodelet manager, comes handy when launching multiple nodelets from different launch files" />
@@ -52,6 +53,7 @@
     <param name="utstamps"          value="$(arg utstamps)" />
     <param name="to_ros"            value="$(arg to_ros)"/>
     <param name="max_rate_save"     value="$(arg max_rate_save)"/>
+    <param name="decimation"        value="$(arg decimation)"/>
 
   </node>
 
