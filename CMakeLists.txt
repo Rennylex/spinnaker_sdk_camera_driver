@@ -32,7 +32,7 @@ find_package(catkin REQUIRED COMPONENTS
 # Acquisition specific
 ###
 # Find Packages
-find_package(OpenCV REQUIRED)
+find_package(OpenCV "3.4.9" REQUIRED)
 # use LibUnwind only for x86_64 or x86_32 architecture
 # do not use LibUnwind for arm architecture
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES x86_64 OR x86_32)
