@@ -12,6 +12,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(PROJECT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include" CACHE PATH "Project Include Directory")
 set(SPINNAKER_INCLUDE_DIR "/usr/include/spinnaker" CACHE PATH "Spinnaker Include Directory")
 set(SPINNAKER_LIB_DIR "/usr/lib" CACHE PATH "Spinnaker Libs Directory")
+#set(SPINNAKER_INCLUDE_DIR "/opt/spinnaker/include" CACHE PATH "Spinnaker Include Directory")
+#set(SPINNAKER_LIB_DIR "/opt/spinnaker/lib" CACHE PATH "Spinnaker Libs Directory")
 # set(yaml-cpp_DIR "~/apps/yaml-cpp" CACHE PATH "yaml-cpp Directory")
 set(CUDA_USE_STATIC_CUDA_RUNTIME  OFF)
 
@@ -32,7 +34,8 @@ find_package(catkin REQUIRED COMPONENTS
 # Acquisition specific
 ###
 # Find Packages
-find_package(OpenCV "3.4.9" REQUIRED)
+#find_package(OpenCV "3.4.9" REQUIRED)
+find_package(OpenCV "3.2.0" REQUIRED)
 # use LibUnwind only for x86_64 or x86_32 architecture
 # do not use LibUnwind for arm architecture
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES x86_64 OR x86_32)
@@ -43,7 +46,7 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES aarch64 OR arm)
   message("Detected ARM architecture")
 endif(${CMAKE_SYSTEM_PROCESSOR} MATCHES aarch64 OR arm)
 
-find_package(Boost REQUIRED)
+find_package(Boost 1.65.1 EXACT REQUIRED)
 if(Boost_FOUND)
   find_package ( Boost COMPONENTS system serialization REQUIRED )
   set(Boost_GENERAL ${Boost_LIBRARIES})
